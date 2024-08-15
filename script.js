@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const CELL_SIZE = 20;
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
-const FPS = 30;
+const FPS = 10;  // Зменшити FPS для повільнішої гри
 
 const BLACK = '#000';
 const GREEN = '#0f0';
@@ -129,7 +129,7 @@ function gameLoop() {
         snake.draw();
         food.draw();
         requestAnimationFrame(loop);
-        setTimeout(() => {}, 1000 / FPS);
+        setTimeout(() => {}, 1000 / FPS);  // Затримка між кадрами
     }
 
     document.addEventListener('keydown', (e) => {
