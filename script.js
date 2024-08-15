@@ -1,10 +1,19 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Адаптивний розмір канвасу
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
 const CELL_SIZE = 20;
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
-const FPS = 100;  // Зменшене FPS для повільнішої гри
+const FPS = 10;
 
 const BLACK = '#000';
 const GREEN = '#0f0';
@@ -150,6 +159,30 @@ function gameLoop() {
         if (e.key === 'ArrowLeft') snake.changeDirection('LEFT');
         if (e.key === 'ArrowRight') snake.changeDirection('RIGHT');
     });
+
+    // Додати підтримку сенсорних подій для мобільних пристроїв
+    canvas.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        const y = touch.clientY;
+        handleTouch(x, y);
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        const y = touch.clientY;
+        handleTouch(x, y);
+    });
+
+    function handleTouch(x, y) {
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        if (x < centerX - 50) snake.changeDirection('LEFT');
+        if (x > centerX + 50) snake.changeDirection('RIGHT');
+        if (y < centerY - 50) snake.changeDirection('UP');
+        if (y > centerY + 50) snake.changeDirection('DOWN');
+    }
 
     requestAnimationFrame(loop);
 }
