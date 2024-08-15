@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const CELL_SIZE = 20;
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
-const FPS = 10;  // Зменшити FPS для повільнішої гри
+const FPS = 10;  // Зменшене FPS для повільнішої гри
 
 const BLACK = '#000';
 const GREEN = '#0f0';
@@ -112,24 +112,31 @@ function gameLoop() {
     const snake = new Snake();
     const food = new Food(snake.body);
 
-    function loop() {
-        snake.move();
+    let lastFrameTime = 0;
 
-        if (snake.body[0].x === food.position.x && snake.body[0].y === food.position.y) {
-            snake.growSnake();
-            food.position = new Food(snake.body).position;
+    function loop(timestamp) {
+        const deltaTime = timestamp - lastFrameTime;
+
+        if (deltaTime >= 1000 / FPS) {
+            snake.move();
+
+            if (snake.body[0].x === food.position.x && snake.body[0].y === food.position.y) {
+                snake.growSnake();
+                food.position = new Food(snake.body).position;
+            }
+
+            if (snake.checkCollision()) {
+                alert('Game Over');
+                return;
+            }
+
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+            snake.draw();
+            food.draw();
+            lastFrameTime = timestamp;
         }
 
-        if (snake.checkCollision()) {
-            alert('Game Over');
-            return;
-        }
-
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-        snake.draw();
-        food.draw();
         requestAnimationFrame(loop);
-        setTimeout(() => {}, 1000 / FPS);  // Затримка між кадрами
     }
 
     document.addEventListener('keydown', (e) => {
@@ -139,7 +146,7 @@ function gameLoop() {
         if (e.key === 'ArrowRight') snake.changeDirection('RIGHT');
     });
 
-    loop();
+    requestAnimationFrame(loop);
 }
 
 gameLoop();
