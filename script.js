@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const CELL_SIZE = 20;
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
-const FPS = 10;  // Зменшене FPS для повільнішої гри
+const FPS = 100;  // Зменшене FPS для повільнішої гри
 
 const BLACK = '#000';
 const GREEN = '#0f0';
@@ -53,6 +53,12 @@ class Snake {
         else if (this.direction === 'UP') newY -= CELL_SIZE;
         else if (this.direction === 'DOWN') newY += CELL_SIZE;
 
+        // Wrap-around logic
+        if (newX >= WIDTH) newX = 0;
+        else if (newX < 0) newX = WIDTH - CELL_SIZE;
+        if (newY >= HEIGHT) newY = 0;
+        else if (newY < 0) newY = HEIGHT - CELL_SIZE;
+
         const newHead = new Cube(newX, newY);
 
         if (this.grow) {
@@ -81,7 +87,6 @@ class Snake {
         for (let i = 1; i < this.body.length; i++) {
             if (head.x === this.body[i].x && head.y === this.body[i].y) return true;
         }
-        if (head.x < 0 || head.x >= WIDTH || head.y < 0 || head.y >= HEIGHT) return true;
         return false;
     }
 }
